@@ -2,104 +2,86 @@
 
 Bạn là một kiểm thử viên phần mềm trong nhóm phát triển ứng dụng web. Nhóm của bạn cần đánh giá hiệu suất (performance) của trang web chat.hoctiep.com bằng công cụ Apache JMeter.
 
-2. Cài Đặt Apache JMeter
+Báo Cáo Kiểm Thử Hiệu Suất Trang Web chat.hoctiep.com bằng Apache JMeter
 
-2.1. Tải và Cài Đặt
+1. Giới Thiệu
 
-Truy cập trang chủ Apache JMeter và tải xuống phiên bản mới nhất.
+Báo cáo này trình bày kết quả kiểm thử hiệu suất trang web chat.hoctiep.com bằng công cụ Apache JMeter. Mục tiêu của kiểm thử là đánh giá khả năng chịu tải của hệ thống, xác định bottleneck và đề xuất cải tiến nếu cần.
 
-Giải nén tệp tải về và đặt trong một thư mục thích hợp.
+2. Tạo Test Plan trong JMeter
 
-Chạy jmeter
+2.1. Tạo một Test Plan mới
 
-3. Thiết Lập Kịch Bản Kiểm Thử Hiệu Suất
-
-3.1. Mô phỏng 50 người dùng trong 5 phút
-
-Mở Apache JMeter và tạo một Test Plan mới.
+Mở Apache JMeter.
 
 Nhấp chuột phải vào Test Plan → Add → Threads (Users) → Thread Group.
 
-Thiết lập:
+2.2. Cấu hình Thread Group
 
-Số Thread (Users): 50
+Number of Threads (Users): 50 (mô phỏng 50 người dùng đồng thời).
 
-Ramp-up Period: 60 giây
+Ramp-Up Period: 60 giây (tăng dần số người dùng trong 60 giây).
 
-Duration: 300 giây
+Duration: 300 giây (chạy trong 5 phút).
+
+2.3. Thêm HTTP Request
 
 Nhấp chuột phải vào Thread Group → Add → Sampler → HTTP Request.
 
-Nhập Server Name or IP: chat.hoctiep.com.
+Cấu hình:
 
-Phương thức HTTP: Chọn GET.
+Server Name or IP: chat.hoctiep.com
 
-Path: / (trang chủ) hoặc /api/... nếu kiểm thử API.
+Phương thức HTTP: Chọn GET hoặc POST tùy theo API.
 
-Nhấp chuột phải vào Thread Group → Add → Listener → Summary Report, View Results Tree, Graph Results để quan sát kết quả.
+Path: / (trang chủ) hoặc /api/... nếu muốn kiểm thử API.
 
-Lưu lại Test Plan.
+2.4. Thêm Listener để xem kết quả
 
-3.2. Đo Thời Gian Phản Hồi & Xác Định Bottleneck
+Nhấp chuột phải vào Thread Group → Add → Listener.
 
-Nhấn nút Start để chạy kịch bản kiểm thử.
+Chọn Summary Report, View Results Tree, Graph Results để theo dõi kết quả.
 
-Quan sát biểu đồ thời gian phản hồi trong Graph Results.
+2.5. Chạy kiểm thử
 
-Kiểm tra Summary Report để xem tổng quan kết quả.
+Nhấn nút Start (nút Play).
 
-Nếu thời gian phản hồi cao, xác định yếu tố gây tắc nghẽn bằng cách kiểm tra View Results Tree.
+Quan sát thời gian phản hồi, tỷ lệ lỗi, throughput.
 
-4. Kiểm Thử Tải (Load Testing)
+3. Kiểm Thử Tải (Load Testing)
 
-Thay đổi số lượng người dùng trong Thread Group:
+Điều chỉnh số lượng Threads từ 10 → 50.
 
-10 → 20 → 30 → 40 → 50.
+Kiểm tra thời gian phản hồi và tỷ lệ lỗi.
 
-Chạy từng kịch bản và ghi nhận:
+Ghi nhận các kết quả quan trọng.
 
-Thời gian phản hồi trung bình.
+4. Kiểm Thử Khả Năng Chịu Tải (Stress Testing)
 
-Tỷ lệ lỗi (Error Rate).
+Tăng số người dùng lên 100.
 
-5. Kiểm Thử Khả Năng Chịu Tải (Stress Testing)
+Quan sát thời điểm hệ thống bắt đầu chậm và tỷ lệ lỗi tăng cao.
 
-Tăng số lượng người dùng lên 100 trong Thread Group.
+5. Kết Quả Kiểm Thử
 
-Quan sát kết quả:
-
-Khi nào hệ thống bắt đầu giảm hiệu suất?
-
-Lỗi xảy ra ở mức tải nào?
+![image](https://github.com/user-attachments/assets/d316c087-1d4a-438e-8fac-d40031ed7fd3)
 
 6. Phân Tích Kết Quả
 
-Xuất báo cáo bằng cách vào File → Save Table Data trong Summary Report.
+Ở mức tải 10 - 30 người dùng, hệ thống hoạt động ổn định, thời gian phản hồi dưới 500ms.
 
-Phân tích các thông số quan trọng:
+Từ 40 người dùng trở lên, thời gian phản hồi tăng đáng kể, tỷ lệ lỗi bắt đầu xuất hiện.
 
-Thời gian phản hồi trung bình
+Với 100 người dùng, hệ thống giảm hiệu suất rõ rệt, throughput giảm, tỷ lệ lỗi tăng lên 20%.
 
-Throughput (số yêu cầu xử lý mỗi giây)
+7. Kết Luận và Đề Xuất
 
-Tỷ lệ lỗi
+Hệ thống có thể xử lý tối đa khoảng 40-50 người dùng đồng thời trước khi hiệu suất giảm.
 
-Đưa ra kết luận:
+Đề xuất tối ưu hóa:
 
-Hệ thống có đáp ứng yêu cầu hiệu suất không?
+Cải thiện server backend (tối ưu truy vấn, caching dữ liệu).
 
-Nếu không, nguyên nhân có thể là gì?
+Tăng tài nguyên hạ tầng (nâng cấp CPU/RAM, cân bằng tải).
 
-7. Câu Hỏi Thảo Luận
-
-Tại sao kiểm thử phi chức năng lại quan trọng trong phần mềm?
-
-Kiểm thử phi chức năng (đặc biệt là kiểm thử hiệu suất) giúp đánh giá khả năng đáp ứng của hệ thống trong điều kiện tải cao.
-
-Các thông số quan trọng trong kiểm thử hiệu suất?
-
-Thời gian phản hồi, throughput, CPU/memory usage, Error Rate.
-
-Nếu hệ thống không đáp ứng yêu cầu hiệu suất, bạn sẽ đề xuất giải pháp gì?
-
-Tối ưu mã nguồn, tăng cơ sở hạ tầng, sử dụng caching, load balancing.
+Tối ưu frontend để giảm tải trên server.
